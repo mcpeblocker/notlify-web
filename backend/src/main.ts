@@ -5,6 +5,7 @@ import { server } from "./core/server";
 import { routes } from "./routes";
 import cookieParser from "cookie-parser";
 import { initDb } from "./core/database";
+import { ErrorHandle } from "./middlewares/errorHandle";
 
 server.use(cookieParser());
 server.use(express.json());
@@ -14,6 +15,8 @@ for (let route of routes) {
   server.use(route.path, route.router);
   logger.silly(`Route initialized: ${route.path}`);
 }
+
+server.use(ErrorHandle);
 
 process.on("unhandledRejection", (reason: any) => {
   logger.error(`Unhandled Rejection: ${reason?.message || "Unknown reason"}`, {

@@ -11,6 +11,8 @@ export const validate = (
     next: express.NextFunction
   ) => {
     const { error } = schema.validate(req[property]);
+    console.log(error?.details);
+        
     if (error) {
       return res
         .status(400)
