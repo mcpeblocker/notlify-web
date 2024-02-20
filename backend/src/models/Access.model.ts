@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 const accessSchema = new mongoose.Schema({
-  userId: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "User",
   },
-  botId: {
+  bot: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "Bot",
@@ -16,6 +16,10 @@ const accessSchema = new mongoose.Schema({
     required: true,
   },
   accessToken: {
+    type: String,
+    required: true,
+  },
+  chatId: {
     type: String,
     required: true,
   },
