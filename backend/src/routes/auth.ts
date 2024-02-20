@@ -3,6 +3,7 @@ import { auth } from "../middlewares/auth";
 import { validate } from "../middlewares/validate";
 import { authLoginSchema } from "../schemas/auth/authLogin.schema";
 import { authRegisterSchema } from "../schemas/auth/authRegister.schema";
+import authController from "../controllers/auths";
 
 const router = express.Router();
 
@@ -12,9 +13,7 @@ router.post("/login", validate(authLoginSchema, "body"), (req, res) => {
 });
 
 // Register
-router.post("/register", validate(authRegisterSchema, "body"), (req, res) => {
-  res.send("Register");
-});
+router.post("/register", validate(authRegisterSchema, "body"), authController.register);
 
 // Logout
 router.post("/logout", auth, (req, res) => {
