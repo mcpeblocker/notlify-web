@@ -2,51 +2,54 @@ import { NextFunction, Request, Response } from "express";
 import succesResponse from "../utils/successResponse";
 import { ErrorHandler } from "../utils/errorHandler";
 import wrapperController from "../utils/wrapperController";
-import { BotModel } from "../models/Bot.model";
 import cryptoHashService from "../services/crypto-hash.service";
+import { AccessModel } from "../models/Access.model";
 
 const add = async (req: Request, res: Response, next: NextFunction) => {
   const value = req.body;
-  const oldData = await BotModel.findOne({
-    name: value.name,
+  const oldData = await AccessModel.findOne({
+    bot: value.botId,
     user: req.user._id,
+    domain: value.domain,
   });
   if (oldData)
     return next(
-      new ErrorHandler(
-        "Ushbu botni qo'shib bo'lgansiz, hohishga ko'ra uni qiymatlarini yangilashiz mumkin",
-        400
-      )
+      new ErrorHandler("Ushbu kirish ruxsati allaqachon qo'shilgan!", 400)
     );
 
-  const hashedToken = cryptoHashService.create(value.token);
-  if (!hashedToken)
+  const accessData = `${req.user._id}|${value.botId}|${value.domain}|${value.chatId}`;
+  const accessToken = cryptoHashService.create(accessData);
+  if (!accessToken)
     return next(new ErrorHandler("Xatolik, birozdan so'ng urinib ko'ring"));
-  value.token = hashedToken;
-  value.ucode = cryptoHashService.create(value.name) ?? Date.now();
-  value.user = req.user._id;
+  let data = {
+    accessToken,
+    bot: value.botId,
+    user: req.user._id,
+    domain: value.domain,
+    chatId: value.chatId,
+  };
 
-  const newData = new BotModel(value);
-  const data = await newData.save();
+  const newDoc = new AccessModel(data);
+  await newDoc.save();
 
   succesResponse(res, data, next);
 };
 
 const get = async (req: Request, res: Response, next: NextFunction) => {
-  const data = await BotModel.findById(req.params.id);
+  const data = await AccessModel.findById(req.params.id);
   if (!data) {
-    return next(new ErrorHandler("bot topilmadi", 400));
+    return next(new ErrorHandler("Kirish ruxsati topilmadi", 400));
   }
   succesResponse(res, data, next);
 };
 
 const destroy = async (req: Request, res: Response, next: NextFunction) => {
-  const data = await BotModel.findByIdAndDelete(req.params.id);
-  if (!data) return next(new ErrorHandler("bot topilmadi", 404));
+  const data = await AccessModel.findByIdAndDelete(req.params.id);
+  if (!data) return next(new ErrorHandler("Kirish ruxsati topilmadi", 404));
   succesResponse(res, data, next);
 };
 
-class botController {
+class AccessController {
   add(req: Request, res: Response, next: NextFunction) {
     wrapperController(req, res, next, add);
   }
@@ -58,4 +61,4 @@ class botController {
   }
 }
 
-export default new botController();
+export default new AccessController();
