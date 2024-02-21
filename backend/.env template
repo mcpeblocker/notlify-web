@@ -1,4 +1,5 @@
 PORT=8000
 DB_URI=mongodb://localhost:27017/notlify
 JWT_SECRET=secret
+CRYPTO_SECRET=this_is_crypto_secret_ha-ha-ha
 TOKEN_EXPIRE_DATE=10
