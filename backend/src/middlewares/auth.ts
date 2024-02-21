@@ -1,21 +1,21 @@
-import jwt from "jsonwebtoken";
 import express from "express";
-import { config } from "../core/config";
+import jwtTokenService from "../services/jwt-token.service";
+import { ErrorHandler } from "../utils/errorHandler";
 
 export const auth = (
   req: express.Request,
-  res: express.Response,
+  _: express.Response,
   next: express.NextFunction
 ) => {
-  const token = req.cookies.token;
-  if (!token)
-    return res.status(401).json({ success: false, error: "Access Denied" });
+  const token = req.cookies.token;  
+  if (!token) return next(new ErrorHandler("Access Denied", 401));
 
   try {
-    const verified = jwt.verify(token, config.jwtSecret);
-    // req.user = verified;
+    const verified = jwtTokenService.decode(token);
+    if(!verified) return next(new ErrorHandler("Access Denied", 401));
+    req.user = verified;
     next();
   } catch (err) {
-    res.status(400).json({ success: false, error: "Invalid Auth Token" });
+    return next(new ErrorHandler("Invalid Auth Token", 401));
   }
 };

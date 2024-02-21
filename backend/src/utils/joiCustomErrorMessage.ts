@@ -6,6 +6,7 @@ const joiCustomErrorMessage = (label?: string) => {
       "string.max": `${label || "{#label}"} ko'pi bilan {#limit}talik bo'lishi kerak.`,
       "string.min": `${label || "{#label}"} kamida {#limit}talik bo'lishi kerak`,
       "string.pattern.base": `${label || "{#label}"} {#value} qiymat bilan bizga mos kelmadi(regex)`,
+      "object.unknown": `${label || "{#label}"} ortiqcha`,
       "number.base": `Iltimos, to'g'ri ${label || "{#label}"}ni kiriting.`,
       "number.integer": `Iltimos, ${label || "{#label}"}ga butun son kiriting.`,
       "any.required": `${label || "{#label}"} maydoni to'ldirilishi shart.`,
