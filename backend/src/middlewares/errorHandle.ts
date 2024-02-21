@@ -3,9 +3,9 @@ import { ErrorHandler } from "../utils/errorHandler";
 
 export const ErrorHandle = (
   err: ErrorHandler,
-  req: Request,
+  _: Request,
   res: Response,
-  next: NextFunction
+  __: NextFunction
 ) => {
   return res.status(err.status).json({
     success: false,

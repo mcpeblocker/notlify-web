@@ -1,5 +1,6 @@
 import express from "express";
 import Joi from "joi";
+import { ErrorHandler } from "../utils/errorHandler";
 
 export const validate = (
   schema: Joi.Schema,
@@ -7,16 +8,14 @@ export const validate = (
 ) => {
   return (
     req: express.Request,
-    res: express.Response,
+    _: express.Response,
     next: express.NextFunction
   ) => {
     const { error } = schema.validate(req[property]);
     console.log(error?.details);
         
     if (error) {
-      return res
-        .status(400)
-        .json({ success: false, error: error.details[0].message });
+      return next(new ErrorHandler(error.details[0].message, 400));
     }
     next();
   };

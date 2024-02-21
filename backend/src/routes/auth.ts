@@ -8,21 +8,15 @@ import authController from "../controllers/auths";
 const router = express.Router();
 
 // Login
-router.post("/login", validate(authLoginSchema, "body"), (req, res) => {
-  res.send("Login");
-});
+router.post("/login", validate(authLoginSchema, "body"), authController.login);
 
 // Register
 router.post("/register", validate(authRegisterSchema, "body"), authController.register);
 
 // Logout
-router.post("/logout", auth, (req, res) => {
-  res.send("Logout");
-});
+router.post("/logout", auth, authController.logout);
 
 // Get user
-router.get("/", auth, (req, res) => {
-  res.send("Get user");
-});
+router.get("/", auth, authController.getMe);
 
 export default router;
